@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL || 'https://your-app.vercel.app';
+const WEBHOOK_URL = process.env.WEBHOOK_URL || 'https://bitrix-webhook-handler.vercel.app';
 
 async function testWebhook() {
   console.log('🧪 Тестирование webhook...');
