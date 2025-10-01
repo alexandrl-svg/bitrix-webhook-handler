@@ -124,6 +124,37 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Обработка POST запросов на корневой путь (для Bitrix24)
+app.post('/', async (req, res) => {
+  console.log('📥 Получен POST запрос на корневой путь от Bitrix24:');
+  console.log('Headers:', req.headers);
+  console.log('Body:', JSON.stringify(req.body, null, 2));
+  
+  try {
+    // Проверяем токен авторизации
+    const authToken = req.body?.auth?.application_token;
+    if (!authToken) {
+      console.log('❌ Отсутствует токен авторизации');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    // Обрабатываем данные
+    const data = req.body?.data;
+    if (data) {
+      console.log('📊 Данные события:', data);
+      
+      // Здесь можно добавить логику обработки
+      // Например, создание БП, отправка уведомлений и т.д.
+    }
+    
+    // Отвечаем Bitrix24
+    res.json({ result: 'OK' });
+  } catch (error) {
+    console.error('❌ Ошибка обработки webhook:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Главная страница
 app.get('/', (req, res) => {
   res.json({
@@ -131,6 +162,7 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     description: 'Обработчик webhook для Bitrix24 с поддержкой создания БП',
     endpoints: {
+      'POST /': 'Входящий webhook от Bitrix24 (корневой путь)',
       'POST /bitrix-webhook': 'Входящий webhook от Bitrix24',
       'POST /api/create-bp': 'Создание БП через API',
       'GET /api/bp-templates': 'Получение шаблонов БП',
